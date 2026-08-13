@@ -11,6 +11,8 @@ public class Game01 extends JFrame {
     public Game01(){
         //创建一个画好的panel
         mp = new MyPanel();
+        Thread thread = new Thread(mp);
+        thread.start();
         //放在当前这个窗口上
         this.add(mp);
         //增加监听

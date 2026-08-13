@@ -7,7 +7,9 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.util.Vector;
 
-public class MyPanel extends JPanel implements KeyListener{
+public class MyPanel extends JPanel implements KeyListener,Runnable{
+    public static final int winWIDTH = 1600;
+    public static final int winHEIGHT = 900;
     Hero hero = null;
     Vector<EnemyTank> enemyTanks = new Vector<>();
     int enemySize = 3;
@@ -25,13 +27,17 @@ public class MyPanel extends JPanel implements KeyListener{
     public void paint(Graphics g){
         super.paint(g);
         //绘制窗口大小，默认为黑色
-        g.fillRect(0, 0, 1000, 750);
+        g.fillRect(0, 0, winWIDTH, winHEIGHT);
 
         //画tank
         drawTank(hero.getX(), hero.getY(), g, hero.getDirection(), 0);
         //画敌方tank
         for (EnemyTank enemyTank : enemyTanks) {
             drawTank(enemyTank.getX(), enemyTank.getY(), g, enemyTank.getDirection(), 1);
+        }
+        //绘制玩家子弹
+        if(hero.getBullet() != null && hero.getBullet().isLive()){
+            g.draw3DRect(hero.getBullet().getX(), hero.getBullet().getY(), 5, 5, false);
         }
     }
 
@@ -96,10 +102,25 @@ public class MyPanel extends JPanel implements KeyListener{
             hero.moveLeft();
         }
 
+        if(e.getKeyCode() == KeyEvent.VK_J)
+            hero.shotBullet();
+
         this.repaint();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.repaint();
+        }
     }
 }
