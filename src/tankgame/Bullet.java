@@ -4,7 +4,7 @@ public class Bullet implements Runnable {
     private int x;
     private int y;
     private int direction;
-    private int speed = 2;
+    private int speed = 5;
     private boolean isLive = true;
     public Bullet(int x, int y, int direction) {
         this.x = x;
@@ -41,7 +41,7 @@ public class Bullet implements Runnable {
         if (x < 0 || x > MyPanel.winWIDTH || y < 0 || y > MyPanel.winHEIGHT) {
             isLive = false;
         }
-        System.out.println("子弹当前位置:x = " + x + ", y = " + y);
+        //System.out.println("子弹当前位置:x = " + x + ", y = " + y);
     }
     public int getX() {
         return x;

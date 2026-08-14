@@ -1,10 +1,14 @@
 package tankgame;
 
+import java.awt.Rectangle;
+import java.util.Vector;
+
 public class Tank {
     private int x;
     private int y;
     private int direction;
     private int speed = 1;
+    private boolean isLive = true;
 
     public static final int WIDTH = 40;
     public static final int HEIGHT = 60;
@@ -19,27 +23,80 @@ public class Tank {
         this(x, y, 1);
     }
 
-    public void moveUp(){
-        //边界碰撞检测
-        if (y - 10 * speed < 0) return;
-        y -= 10 * speed;
+    //others：除自己以外的所有存活坦克，由游戏层传入
+    public boolean moveUp(Vector<Tank> others){
+        int targetY = y - 10 * speed;
+        //窗口边界检测
+        if (targetY < 0) return false;
+        //坦克碰撞检测：检查目标位置是否与其他坦克重叠
+        for (Tank other : others) {
+            if (new Rectangle(x, targetY, WIDTH, HEIGHT).intersects(other.getRect())) {
+                return false;
+            }
+        }
+        y = targetY;
+        return true;
     }
-    public void moveDown(){
-        //边界碰撞检测
-        if (y + 10 * speed + HEIGHT > MyPanel.winHEIGHT) return;
-        y += 10 * speed;
+    public boolean moveDown(Vector<Tank> others){
+        int targetY = y + 10 * speed;
+        //窗口边界检测
+        if (targetY + HEIGHT > MyPanel.winHEIGHT) return false;
+        //坦克碰撞检测
+        for (Tank other : others) {
+            if (new Rectangle(x, targetY, WIDTH, HEIGHT).intersects(other.getRect())) {
+                return false;
+            }
+        }
+        y = targetY;
+        return true;
     }
-    public void moveLeft(){
-        //边界碰撞检测
-        if (x - 10 * speed < 0) return;
-        x -= 10 * speed;
+    public boolean moveLeft(Vector<Tank> others){
+        int targetX = x - 10 * speed;
+        //窗口边界检测
+        if (targetX < 0) return false;
+        //坦克碰撞检测
+        for (Tank other : others) {
+            if (new Rectangle(targetX, y, WIDTH, HEIGHT).intersects(other.getRect())) {
+                return false;
+            }
+        }
+        x = targetX;
+        return true;
     }
-    public void moveRight(){
-        //边界碰撞检测
-        if (x + 10 * speed + WIDTH > MyPanel.winHEIGHT) return;
-        x += 10 * speed;
+    public boolean moveRight(Vector<Tank> others){
+        int targetX = x + 10 * speed;
+        //窗口边界检测
+        if (targetX + WIDTH > MyPanel.winWIDTH) return false;
+        //坦克碰撞检测
+        for (Tank other : others) {
+            if (new Rectangle(targetX, y, WIDTH, HEIGHT).intersects(other.getRect())) {
+                return false;
+            }
+        }
+        x = targetX;
+        return true;
+    }
+    public Rectangle getRect() {
+        if (direction == 1 || direction == 3) {
+            return new Rectangle(x - 10, y + 10, 60, 40); //旋转后的实际范围
+        }
+        return new Rectangle(x, y, WIDTH, HEIGHT);
+       }
+    public boolean isLive() {
+        return isLive;
     }
 
+    public void setLive(boolean live) {
+        isLive = live;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
     public int getDirection() {
         return direction;
     }
